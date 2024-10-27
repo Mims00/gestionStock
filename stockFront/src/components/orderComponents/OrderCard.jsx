@@ -28,6 +28,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import PrintIcon from '@mui/icons-material/Print';
 import CancelIcon from '@mui/icons-material/Cancel';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const OrderCard = ({orderId}) => {
     const [order, setOrder] = useState([]);
@@ -92,24 +93,34 @@ const OrderCard = ({orderId}) => {
 
 
     const handleDeleteOrder = async (orderId) => {
-    // Demander une confirmation avant la suppression
-    const confirmation = window.confirm('Êtes-vous sûr de vouloir supprimer cette commande ?');
+        // Demander une confirmation avant la suppression avec SweetAlert
+        const result = await Swal.fire({
+            title: 'Êtes-vous sûr ?',
+            text: 'Vous ne pourrez pas revenir en arrière !',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Oui, supprimer !',
+            cancelButtonText: 'Annuler'
+        });
     
-    if (confirmation) {
-        try {
-            // Envoyer une requête de suppression à l'API
-            await axios.delete(`http://localhost:3000/api/orders/${orderId}`);
-            
-            // Mettre à jour la liste des commandes localement après la suppression
-            setOrders((prevOrders) => prevOrders.filter(order => order.orderId !== orderId));
-            
-            console.log(`Commande avec ID ${orderId} supprimée avec succès.`);
-        } catch (error) {
-            console.error('Erreur lors de la suppression de la commande :', error);
-            alert('Erreur lors de la suppression de la commande. Veuillez réessayer.');
+        if (result.isConfirmed) {
+            try {
+                // Envoyer une requête de suppression à l'API
+                await axios.delete(`http://localhost:3000/api/orders/${orderId}`);
+                
+                // Mettre à jour la liste des commandes localement après la suppression
+                setOrders((prevOrders) => prevOrders.filter(order => order.orderId !== orderId));
+                
+                // Afficher un message de succès
+                Swal.fire('Supprimé !', 'Votre commande a été supprimée.', 'success');
+            } catch (error) {
+                console.error('Erreur lors de la suppression de la commande :', error);
+                Swal.fire('Erreur', 'Erreur lors de la suppression de la commande. Veuillez réessayer.', 'error');
+            }
         }
-    }
-};
+    };
 
 const handleUpdate = (orderId) => {
   const orderToUpdate = orders.find(order => order.orderId === orderId);
@@ -117,8 +128,7 @@ const handleUpdate = (orderId) => {
   if (orderToUpdate) {
     // Pre-populate the order form with selected order data
     setShowOrderForm(true);
-    // Implement logic to pass selectedOrder data to your order form component
-    // (e.g., using context, Redux, or other state management techniques)
+   
   }
 };
 
@@ -143,7 +153,6 @@ const handlePrint = async () => {
   setOpenDialog(false); // Fermer le dialogue après impression
 };
 
-// handleReturn : Fermer simplement le dialogue sans changer l'état
 const handleReturn = () => {
   setOpenDialog(false); // Fermer le dialogue sans modifier l'état de la commande
 };
@@ -155,10 +164,19 @@ const handleCancelOrder = async (orderId) => {
         return;
     }
 
-    // Demande de confirmation avant d'annuler la commande
-    const confirmed = window.confirm('Êtes-vous sûr de vouloir annuler cette commande ?');
+    // Demande de confirmation avant d'annuler la commande avec SweetAlert
+    const result = await Swal.fire({
+        title: 'Êtes-vous sûr ?',
+        text: 'Voulez-vous vraiment annuler cette commande ?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Oui, annuler !',
+        cancelButtonText: 'Annuler'
+    });
 
-    if (!confirmed) {
+    if (!result.isConfirmed) {
         console.log('Annulation de commande annulée');
         return; // Si l'utilisateur annule, on sort de la fonction
     }
@@ -167,12 +185,20 @@ const handleCancelOrder = async (orderId) => {
     try {
         await axios.patch(`http://localhost:3000/api/orders/${orderId}/cancel`);
         setIsCancelling(false);
+        
+        // Afficher un message de succès
+        Swal.fire('Annulé !', 'Votre commande a été annulée.', 'success');
+        
         // Mettez à jour l'état ou rechargez les commandes ici si nécessaire
     } catch (error) {
         setIsCancelling(false);
         console.error('Erreur lors de l\'annulation de la commande:', error);
+        
+        // Afficher un message d'erreur
+        Swal.fire('Erreur', 'Erreur lors de l\'annulation de la commande. Veuillez réessayer.', 'error');
     }
 };
+
 
 
    
@@ -237,18 +263,40 @@ const handleCancelOrder = async (orderId) => {
                             <CardContent sx={{ padding: 2 }}>
                                 <Typography variant="h6" sx={{ fontSize: 16, fontWeight: 'bold', mb: 1 }}>
                                     Commande n°: {order.orderId}
+                                    <Typography sx={{ fontSize: 14 }}>
+                                    <strong>Date:</strong> {order.orderDate}
                                 </Typography>
-                                <Typography sx={{ fontSize: 14 }}>Date: {order.orderDate}</Typography>
-                                <Typography sx={{ fontSize: 14 }}>Client: {order.Customer?.customerName}</Typography>
-                                <Typography sx={{ fontSize: 14 }}>Adresse: {order.Customer?.address}</Typography>
-                                <Typography sx={{ fontSize: 14 }}>Téléphone: {order.Customer?.phoneNumber}</Typography>
-                                <Typography sx={{ fontSize: 14 }}>Mode de livraison: {order.deliveryMethod}</Typography>
-                                <Typography sx={{ fontSize: 14 }}>Mode de paiement: {order.paymentMethod}</Typography>
-                                <Typography sx={{ fontSize: 14 }}>Livreur: {order.DeliveryPerson?.deliveryPersName}</Typography>
-                                <Typography sx={{ fontSize: 14 }}>Contact livreur: {order.DeliveryPerson?.deliveryPersPhone}</Typography>
-                                <Typography sx={{ fontSize: 14 }}>Adresse de livraison: {order.DeliveryPerson?.deliveryAddress}</Typography>
-                                <Typography sx={{ fontSize: 14 }}>État: {order.status}</Typography>
-                                <Typography sx={{ fontSize: 14, mb: 2 }}>Total: {order.finalAmount}</Typography>
+                                <Typography sx={{ fontSize: 14 }}>
+                                    <strong>Client:</strong> {order.Customer?.customerName}
+                                </Typography>
+                                <Typography sx={{ fontSize: 14 }}>
+                                    <strong>Adresse:</strong> {order.Customer?.address}
+                                </Typography>
+                                <Typography sx={{ fontSize: 14 }}>
+                                    <strong>Téléphone:</strong> {order.Customer?.phoneNumber}
+                                </Typography>
+                                <Typography sx={{ fontSize: 14 }}>
+                                    <strong>Mode de livraison:</strong> {order.deliveryMethod}
+                                </Typography>
+                                <Typography sx={{ fontSize: 14 }}>
+                                    <strong>Mode de paiement:</strong> {order.paymentMethod}
+                                </Typography>
+                                <Typography sx={{ fontSize: 14 }}>
+                                    <strong>Livreur:</strong> {order.DeliveryPerson?.deliveryPersName}
+                                </Typography>
+                                <Typography sx={{ fontSize: 14 }}>
+                                    <strong>Contact livreur:</strong> {order.DeliveryPerson?.deliveryPersPhone}
+                                </Typography>
+                                <Typography sx={{ fontSize: 14 }}>
+                                    <strong>Adresse de livraison:</strong> {order.DeliveryPerson?.deliveryAddress}
+                                </Typography>
+                                <Typography sx={{ fontSize: 14 }}>
+                                    <strong>État:</strong> {order.status}
+                                </Typography>
+                                <Typography sx={{ fontSize: 14, mb: 2 }}>
+                                    <strong>Total:</strong> {order.totalAmount}Ar
+                                </Typography>
+                               Montant final: {order.finalAmount}Ar</Typography>
 
                                 <Box mt={2} display="flex" justifyContent="space-between">
                                     {order.status === 'En attente' && (

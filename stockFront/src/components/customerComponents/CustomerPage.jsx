@@ -5,6 +5,7 @@ import { Container, Typography, Box, Fab, Dialog, DialogContent, DialogActions, 
 import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
 import { getCustomers, createCustomer, updateCustomer, deleteCustomer } from '../../api/customerApi';
+import Swal from 'sweetalert2';
 
 const CustomerPage = () => {
     const [customers, setCustomers] = useState([]);
@@ -60,25 +61,38 @@ const CustomerPage = () => {
         setOpen(true);
     };
 
-    const handleDeleteConfirm = (customerId) => {
-        setCustomerToDelete(customerId);
-        setConfirmDelete(true);
-    };
+ 
+    const handleDeleteConfirm = async (customerId) => {
+        const result = await Swal.fire({
+            title: 'Êtes-vous sûr de vouloir supprimer ce client ?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Supprimer',
+            cancelButtonText: 'Annuler'
+        });
 
-    const handleDelete = async () => {
-        try {
-            await deleteCustomer(customerToDelete);
-            setSuccessMessage('Client supprimé avec succès !');
-            fetchCustomers();
-            setConfirmDelete(false);
-        } catch (error) {
-            console.error('Error deleting customer:', error);
+        if (result.isConfirmed) {
+            handleDelete(customerId); // Appelle handleDelete avec l'ID du client
         }
     };
 
-    const handleCancelDelete = () => {
-        setConfirmDelete(false);
+    const handleDelete = async (customerId) => {
+        try {
+            await deleteCustomer(customerId); // Suppression du client
+            setSuccessMessage('Client supprimé avec succès !'); // Message de succès
+            fetchCustomers(); // Rafraîchir la liste des clients
+        } catch (error) {
+            console.error('Erreur lors de la suppression du client:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Erreur',
+                text: 'Une erreur est survenue lors de la suppression du client.',
+            });
+        }
     };
+
 
     // Fonction pour naviguer vers la liste des commandes d'un client spécifique
     const handleViewOrders = (customerId) => {
@@ -133,14 +147,14 @@ const CustomerPage = () => {
                 </DialogContent>
             </Dialog>
 
-            <Dialog open={confirmDelete} onClose={handleCancelDelete}>
+            <Dialog open={confirmDelete} >
                 <DialogContent>
                     <Typography variant="h6">
                         Êtes-vous sûr de vouloir supprimer ce client ?
                     </Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCancelDelete} color="primary">
+                    <Button  color="primary">
                         Annuler
                     </Button>
                     <Button onClick={handleDelete} color="secondary">

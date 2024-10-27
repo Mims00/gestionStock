@@ -32,10 +32,10 @@ const PredictionPage = () => {
             }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="product" />
+            <XAxis dataKey="produit" />
             <YAxis />
             <Tooltip />
-            <Bar dataKey="replenishQty" fill="#8884d8" />
+            <Bar dataKey="replenishQty" fill="#87CEEB" />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>

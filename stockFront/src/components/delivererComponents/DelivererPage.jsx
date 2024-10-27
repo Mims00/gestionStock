@@ -5,6 +5,7 @@ import { Container, Typography, Box, Fab, Dialog, DialogContent, DialogActions, 
 import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
 import { getDeliverers, createDeliverer, updateDeliverer, deleteDeliverer } from '../../api/delivererApi';
+import Swal from 'sweetalert2';
 
 const DelivererPage = () => {
     const [deliverers, setDeliverers] = useState([]);
@@ -64,29 +65,41 @@ const DelivererPage = () => {
         setDelivererToDelete(delivererId);
         setConfirmDelete(true);
     };
-
+    
     const handleDelete = async () => {
         // Demande de confirmation avant de supprimer
-        const confirmed = window.confirm('Êtes-vous sûr de vouloir supprimer ce livreur ?');
-        
-        if (confirmed) {
+        const result = await Swal.fire({
+            title: 'Êtes-vous sûr de vouloir supprimer ce livreur ?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Supprimer',
+            cancelButtonText: 'Annuler'
+        });
+    
+        if (result.isConfirmed) {
             try {
-                await deleteDeliverer(delivererToDelete);
-                setSuccessMessage('Livreur supprimé avec succès !');
-                fetchDeliverers();
-                setConfirmDelete(false);
+                await deleteDeliverer(delivererToDelete); // Suppression du livreur
+                setSuccessMessage('Livreur supprimé avec succès !'); // Message de succès
+                fetchDeliverers(); // Rafraîchir la liste des livreurs
+                Swal.fire('Supprimé!', 'Le livreur a été supprimé avec succès.', 'success'); // Notification de succès
             } catch (error) {
-                console.error('Error deleting deliverer:', error);
+                console.error('Erreur lors de la suppression du livreur:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erreur',
+                    text: 'Une erreur est survenue lors de la suppression du livreur.',
+                });
             }
         } else {
-            console.log('Suppression annulée');
+            console.log('Suppression annulée'); // Message dans la console si l'utilisateur annule
         }
     };
     
     const handleCancelDelete = () => {
         setConfirmDelete(false);
     };
-
     const handleViewOrders = (delivererId) => {
         navigate(`/order-list?delivererId=${delivererId}`); 
     };

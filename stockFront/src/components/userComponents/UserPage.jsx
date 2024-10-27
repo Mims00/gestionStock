@@ -4,6 +4,7 @@ import AddIcon from '@mui/icons-material/Add';
 import UserForm from './UserForm';
 import UserCard from './UserCard';
 import { addUser, updateUser, getUsers ,deleteUser} from '../../api/userApi';
+import Swal from 'sweetalert2';
 
 const UserPage = () => {
     const [users, setUsers] = useState([]);
@@ -69,17 +70,33 @@ const UserPage = () => {
         }
     };
     const handleDelete = async (userId) => {
-        const confirmation = window.confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');
-        if (confirmation) {
+        // Demande de confirmation avant de supprimer avec SweetAlert
+        const result = await Swal.fire({
+            title: 'Êtes-vous sûr ?',
+            text: 'Vous ne pourrez pas revenir en arrière !',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Oui, supprimer !',
+            cancelButtonText: 'Annuler'
+        });
+    
+        if (result.isConfirmed) {
             try {
                 await deleteUser(userId); // Appel à l'API pour supprimer l'utilisateur
                 // Mise à jour de la liste des utilisateurs après la suppression
                 setUsers((prevUsers) => prevUsers.filter((user) => user.userId !== userId));
+                Swal.fire('Supprimé !', 'L\'utilisateur a été supprimé.', 'success');
             } catch (error) {
-                console.error('Error deleting user:', error);
+                console.error('Erreur lors de la suppression de l\'utilisateur :', error);
+                Swal.fire('Erreur', 'Il y a eu une erreur lors de la suppression de l\'utilisateur.', 'error');
             }
+        } else {
+            console.log('Suppression annulée');
         }
     };
+    
     // Éditer un utilisateur
     const handleUserEdit = async (userId) => {
         const userToEdit = users.find(user => user.userId === userId);

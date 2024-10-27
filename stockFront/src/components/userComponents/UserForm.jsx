@@ -96,10 +96,10 @@ const UserForm = ({ user, onSave, onCancel }) => {
         </Grid>
         <Box mt={3} sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
             <Button variant="contained" color="primary" onClick={handleSubmit} sx={{ width: '48%' }}>
-                Save
+              Enregistrer
             </Button>
             <Button variant="outlined" color="secondary" onClick={onCancel} sx={{ width: '48%' }}>
-                Cancel
+                Annuler
             </Button>
         </Box>
     </Box>

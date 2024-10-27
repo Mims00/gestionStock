@@ -4,6 +4,7 @@ import ProductTable from './ProductTable';
 import { Container, Typography, Box, Fab, Dialog, DialogContent, TextField } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { getProducts, createProduct, updateProduct, deleteProduct } from '../../api/productApi';
+import Swal from 'sweetalert2';
 
 const ProductPage = () => {
     const [products, setProducts] = useState([]);
@@ -54,14 +55,28 @@ const ProductPage = () => {
 
     const handleDelete = async (productId) => {
         // Demande de confirmation avant de supprimer
-        const confirmed = window.confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');
-        
-        if (confirmed) {
+        const result = await Swal.fire({
+            title: 'Êtes-vous sûr de vouloir supprimer ce produit ?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Supprimer',
+            cancelButtonText: 'Annuler'
+        });
+    
+        if (result.isConfirmed) {
             try {
-                await deleteProduct(productId);
-                fetchProducts();
+                await deleteProduct(productId); // Suppression du produit
+                fetchProducts(); // Rafraîchir la liste des produits
+                Swal.fire('Supprimé!', 'Le produit a été supprimé avec succès.', 'success'); // Message de succès
             } catch (error) {
-                console.error('Error deleting product:', error);
+                console.error('Erreur lors de la suppression du produit:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erreur',
+                    text: 'Une erreur est survenue lors de la suppression du produit.',
+                });
             }
         } else {
             console.log('Suppression annulée');

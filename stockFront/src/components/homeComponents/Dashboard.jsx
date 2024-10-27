@@ -135,43 +135,43 @@ useEffect(() => {
     <Grid container spacing={3}>
     <Grid container spacing={3}>
     {[
-    { title: "Chiffre d'affaires", value: metrics.totalRevenue, change: metrics.revenueChange || 'N/A' },
-    { title: "Nombre de commandes", value: metrics.totalOrders, change: metrics.ordersChange || 'N/A' },
-    { title: "Taux de rotation des stocks", value: metrics.stockTurnover, change: metrics.stockTurnoverChange || 'N/A' },
-    { title: "Marge bénéficiaire", value: metrics.profitMargin, change: metrics.profitMarginChange || 'N/A' }
-].map((metric, index) => (
-    <Grid item xs={12} sm={6} md={3} key={index}>
+      { title:<strong>Chiffre d'affaires </strong>, value: metrics.totalRevenue, change: metrics.revenueChange || 'N/A' },
+      { title: <strong>Nombre de commandes</strong>, value: metrics.totalOrders, change: metrics.ordersChange || 'N/A' },
+      { title: <strong>Taux de rotation des stocks</strong>, value: metrics.stockTurnover, change: metrics.stockTurnoverChange || 'N/A' },
+      { title: <strong>Marge bénéficiaire</strong>, value: metrics.profitMargin, change: metrics.profitMarginChange || 'N/A' }
+    ].map((metric, index) => (
+      <Grid item xs={12} sm={6} md={3} key={index}>
         <Card>
-            <CardContent>
-                <Typography color="textSecondary" gutterBottom>
-                    {metric.title}
-                </Typography>
-                <Typography variant="h5" component="div">
-                    {metric.value}
-                </Typography>
-                <Typography 
-                    color={
-                        metric.change === 'N/A' 
-                            ? 'textSecondary' 
-                            : metric.change.startsWith('+') 
-                            ? 'success.main' 
-                            : 'error.main'
-                    }
-                >
-                    {metric.change}
-                </Typography>
-            </CardContent>
+          <CardContent>
+            <Typography color="textSecondary" gutterBottom>
+              {metric.title}
+            </Typography>
+            <Typography variant="h5" component="div">
+              {metric.value}
+            </Typography>
+            <Typography 
+              color={
+                metric.change === 'N/A' 
+                  ? 'textSecondary' 
+                  : metric.change.startsWith('+') 
+                  ?  'error.main'
+                  :  'primary.main'    
+              }
+            >
+              {metric.change !== 'N/A' && !metric.change.startsWith('-') ? `+${metric.change}` : metric.change}
+            </Typography>
+          </CardContent>
         </Card>
-    </Grid>
-))}
+      </Grid>
+    ))}
 
 
           </Grid>
         {/* Graphique des niveaux de stock */}
         <Grid item xs={12} md={6}>
           <Paper  sx={{ p: 2, mb: 0 }}>
-            <Typography variant="h6" gutterBottom>
-              Niveaux de Stock
+            <Typography variant="h6" gutterBottom font>
+            <strong>Niveaux de Stock</strong>
             </Typography>
             <BarChart
               xAxis={[{ scaleType: 'band', data: productNames, tickRotation: -45 }]}
@@ -186,7 +186,7 @@ useEffect(() => {
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom>
-              Ventes Mensuelles
+            <strong>Ventes Mensuelles</strong>
             </Typography>
             <LineChart
               xAxis={[{ data: monthLabels, scaleType: 'band' }]}
@@ -201,7 +201,7 @@ useEffect(() => {
         <Grid item xs={12} md={6}>
         <Paper >
           <Typography variant="h6">
-            Produits les Plus Vendus
+          <strong> Produits les Plus Vendus</strong>
           </Typography>
           <Box >
             <Box sx={{ mr: 5 }}>
@@ -224,7 +224,7 @@ useEffect(() => {
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom>
-              Tendances des Produits
+            <strong>Tendances des Produits</strong>
             </Typography>
             <TableContainer>
               <Table>

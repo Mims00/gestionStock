@@ -9,13 +9,14 @@ const UserCard = ({ user, onEdit, onDelete, onViewOrders }) => {
     return (
         <Card sx={{ marginBottom: '16px', padding: '16px', boxShadow: 3 }}>
             <CardContent>
-                <Typography variant="h6">{user.username}</Typography>
-                <Typography>Nom: {user.firstName}</Typography>
-                <Typography>Prénom: {user.lastName}</Typography>
-                <Typography>Email: {user.email}</Typography>
-                <Typography>Téléphone: {user.phone}</Typography>
-                <Typography>Rôle: {user.role}</Typography>
-                <Typography>Mot de passe: {user.password}</Typography> 
+            <Typography variant="h6">{user.username}</Typography>
+            <Typography><strong>Nom:</strong> {user.firstName}</Typography>
+            <Typography><strong>Prénom:</strong> {user.lastName}</Typography>
+            <Typography><strong>Email:</strong> {user.email}</Typography>
+            <Typography><strong>Téléphone:</strong> {user.phone}</Typography>
+            <Typography><strong>Rôle:</strong> {user.role}</Typography>
+            <Typography><strong>Mot de passe:</strong> {user.password}</Typography>
+
                 <Box mt={2} display="flex" justifyContent="space-between">
                     <IconButton color="primary" onClick={onEdit}>
                         <EditIcon />
