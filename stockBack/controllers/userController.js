@@ -1,23 +1,27 @@
 const bcrypt = require('bcrypt');
 const User = require('../models'); // Assurez-vous que le modèle est bien importé
 
-// Ajouter un utilisateur (sans nom d'utilisateur et mot de passe)
 const addUser = async (req, res) => {
   try {
-    const { firstName, lastName, role, phone, email } = req.body;
+    // Récupérer les données du corps de la requête
+    const { data } = req.body;
 
     // Vérification que les données obligatoires sont présentes
-    if (!firstName || !lastName || !role || !phone) {
+    if (!data || !data.username || !data.email || !data.password) {
       return res.status(400).json({ error: 'All fields are required.' });
     }
 
-    const user = await User.create({ firstName, lastName, role, phone, email });
+    // Création de l'utilisateur en utilisant l'objet data
+    const user = await User.create(data);
+
+    // Réponse avec l'utilisateur créé
     res.status(201).json(user);
   } catch (error) {
     console.error('Error creating user:', error);
     res.status(500).json({ error: 'Error creating user.' });
   }
 };
+
 
 // Ajouter nom d'utilisateur et mot de passe
 const addCredentials = async (req, res) => {

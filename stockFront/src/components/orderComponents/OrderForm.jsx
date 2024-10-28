@@ -244,6 +244,8 @@ const OrderForm = ({ existingOrder, onSubmit }) => {
                 });
         } else {
             // Création d'une nouvelle commande
+            console.log(orderData);
+            
             axios.post('http://localhost:3000/api/orders', orderData)
                 .then(response => {
                     console.log('Order created successfully:', response.data);
