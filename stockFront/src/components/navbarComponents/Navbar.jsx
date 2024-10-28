@@ -1,15 +1,16 @@
 
 import { AppBar, Toolbar, Tabs, Tab, IconButton, Badge } from '@mui/material';
 import { Notifications, AccountCircle } from '@mui/icons-material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';  
 import axios from 'axios';
 
 const Navbar = () => {
 
+  const navigate = useNavigate()
+
   const [notifications, setNotifications] = useState([]);
 
-  // Fonction pour récupérer les notifications depuis l'API
   const fetchNotifications = async () => {
       try {
           const response = await axios.get('http://localhost:3000/api/notifications');
@@ -18,6 +19,14 @@ const Navbar = () => {
           console.error('Erreur lors de la récupération des notifications :', error);
       }
   };
+
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token-gs");
+
+  //   if (!token) {
+  //     navigate("/login");
+  //   }
+  // }, [navigate]);
 
   useEffect(() => {
       fetchNotifications();

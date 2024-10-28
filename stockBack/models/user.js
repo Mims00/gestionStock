@@ -13,7 +13,7 @@ module.exports = (sequelize) => {
     },
     firstName: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     lastName: {
       type: DataTypes.STRING,
@@ -22,7 +22,7 @@ module.exports = (sequelize) => {
     
    role: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
     phone: {
       type: DataTypes.STRING,
@@ -43,7 +43,7 @@ module.exports = (sequelize) => {
     },
     password: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
   }, {
     hooks: {

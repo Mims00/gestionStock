@@ -1,24 +1,71 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, Container, InputAdornment } from '@mui/material';
 import { Person, Email, Lock } from '@mui/icons-material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const RegisterPage = () => {
+  const navigate = useNavigate();
+
+  // Initial state for form fields
+  const [formValues, setFormValues] = useState({
+    username: '',
+    email: '',
+    password: '',
+    password2: ''
+  });
+
+  // Handle change in form fields
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues({
+      ...formValues,
+      [name]: value
+    });
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Check if passwords match
+    if (formValues.password !== formValues.password2) {
+      alert('Les mots de passe ne correspondent pas.');
+      return;
+    }
+
+    try {
+      // Send data to backend
+      const response = await axios.post('http://localhost:3000/api/users', {
+        username: formValues.username,
+        email: formValues.email,
+        password: formValues.password
+      });
+
+      if (response.status === 201) {
+        alert('Inscription réussie !');
+        navigate('/login');
+      }
+    } catch (error) {
+      console.error('Erreur lors de l\'inscription :', error);
+      alert('Erreur lors de l\'inscription. Veuillez réessayer.');
+    }
+  };
+
   return (
     <Container
       sx={{
-        height: '100vh', // Full viewport height
+        height: '100vh',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-      
       }}
     >
       <Box
         sx={{
           width: 400,
           padding: 4,
-          boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)', // Softer shadow for a professional look
+          boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
           borderRadius: 2,
           backgroundColor: 'white',
           textAlign: 'center',
@@ -28,12 +75,14 @@ const RegisterPage = () => {
           Inscription
         </Typography>
 
-        <form>
-          {/* Username Field */}
+        <form onSubmit={handleSubmit}>
           <TextField
             fullWidth
             label="Nom d'utilisateur"
             margin="normal"
+            name="username"
+            value={formValues.username}
+            onChange={handleChange}
             variant="outlined"
             InputProps={{
               startAdornment: (
@@ -44,11 +93,13 @@ const RegisterPage = () => {
             }}
           />
           
-          {/* Email/Phone Field */}
           <TextField
             fullWidth
             label="Email ou numéro de téléphone"
             margin="normal"
+            name="email"
+            value={formValues.email}
+            onChange={handleChange}
             variant="outlined"
             InputProps={{
               startAdornment: (
@@ -59,12 +110,14 @@ const RegisterPage = () => {
             }}
           />
           
-          {/* Password Field */}
           <TextField
             fullWidth
             label="Mot de passe"
             type="password"
             margin="normal"
+            name="password"
+            value={formValues.password}
+            onChange={handleChange}
             variant="outlined"
             InputProps={{
               startAdornment: (
@@ -75,12 +128,14 @@ const RegisterPage = () => {
             }}
           />
           
-          {/* Confirm Password Field */}
           <TextField
             fullWidth
             label="Confirmer le mot de passe"
             type="password"
+            name="password2"
             margin="normal"
+            value={formValues.password2}
+            onChange={handleChange}
             variant="outlined"
             InputProps={{
               startAdornment: (
@@ -91,15 +146,15 @@ const RegisterPage = () => {
             }}
           />
           
-          {/* Submit Button */}
           <Button
+            type="submit"
             fullWidth
             variant="contained"
             sx={{
               marginTop: 3,
               backgroundColor: '#003366', 
               color: '#fff',
-              '&:hover': { backgroundColor: '#002244' }, 
+              '&:hover': { backgroundColor: '#002244' },
             }}
           >
             S'inscrire
