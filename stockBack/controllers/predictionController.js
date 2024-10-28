@@ -1,5 +1,5 @@
 const { Product, OrderLine } = require('../models');
-const { trainModel, predictReplenishment } = require('../../client/src/api/predictionApi');
+const { trainModel, predictReplenishment } = require('../../stockFront/src/api/predictionApi');
 
 let trainedModel = null;
 

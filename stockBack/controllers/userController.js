@@ -7,7 +7,7 @@ const addUser = async (req, res) => {
     const { data } = req.body;
 
     // Vérification que les données obligatoires sont présentes
-    if (!data || !data.username || !data.email || !data.password) {
+    if (!data ) {
       return res.status(400).json({ error: 'All fields are required.' });
     }
 
