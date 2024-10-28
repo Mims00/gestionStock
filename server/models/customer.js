@@ -1,6 +1,12 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
 const Order = require('./order');
+const { Sequelize, DataTypes } = require("sequelize");
+
+
+
+const sequelize = new Sequelize("gestionstock", "root", "", {
+    host: "localhost",
+    dialect: "mysql"
+});
 
 const Customer = sequelize.define('Customer', {
   customerId: {
