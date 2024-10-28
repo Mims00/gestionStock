@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Container, Card, CardContent, CardActions, Avatar, Button, TextField, IconButton, Tabs, Tab, Box } from '@mui/material';
 import { Edit, Save, ExitToApp } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 const UserProfile = () => {
     const [editMode, setEditMode] = useState(false);
     const [tabIndex, setTabIndex] = useState(0);
+    const navigate = useNavigate()
 
     const handleEditToggle = () => {
         setEditMode(!editMode);
@@ -13,6 +15,14 @@ const UserProfile = () => {
     const handleTabChange = (event, newIndex) => {
         setTabIndex(newIndex);
     };
+
+
+    const deconnexion =()=>
+    {
+
+        localStorage.removeItem("token-gs")
+        navigate("/login")
+    }
 
     return (
         <Container maxWidth="sm">
@@ -93,7 +103,7 @@ const UserProfile = () => {
         <IconButton color="primary" onClick={handleEditToggle}>
             {editMode ? <Save /> : <Edit />}
         </IconButton>
-        <Button variant="contained" color="error" startIcon={<ExitToApp />}>
+        <Button variant="contained" color="error" onClick={()=>deconnexion()} startIcon={<ExitToApp />}>
             Se Déconnecter
         </Button>
     </CardActions>

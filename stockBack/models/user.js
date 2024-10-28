@@ -1,5 +1,3 @@
-// models/User.js
-
 const { DataTypes } = require('sequelize');
 const bcrypt = require('bcrypt');
 
@@ -9,7 +7,6 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
-      
     },
     firstName: {
       type: DataTypes.STRING,
@@ -19,11 +16,10 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    
-   role: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
+    role: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     phone: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -38,7 +34,7 @@ module.exports = (sequelize) => {
     },
     username: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
       unique: true,
     },
     password: {

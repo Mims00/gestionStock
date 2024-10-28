@@ -9,8 +9,8 @@ const orderRoute=require('./routes/orderRoute');
 const customerRoute=require('./routes/customerRoute');
 const delivererRoute=require ('./routes/delivererRoute')
 const notificationRoute = require('./routes/notificationRoute'); 
-const authRoute=require('./routes/authRoute');
-const predictionRoute=require('./routes/predictionRoute')
+const predictionRoute=require('./routes/predictionRoute');
+const login = require('./controllers/authController');
 
 app.use(cors());
 app.use(express.json());
@@ -22,7 +22,7 @@ app.use('/api/orders', orderRoute);
 app.use('/api/customers', customerRoute);
 app.use('/api/deliverers', delivererRoute);
 app.use('/api/notifications', notificationRoute);
-app.use('/api/auth',authRoute);
+app.post('/api/auth',login);
 app.use('/api/predictions', predictionRoute);
 syncDb();
 

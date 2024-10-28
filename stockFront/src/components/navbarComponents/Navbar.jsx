@@ -20,13 +20,13 @@ const Navbar = () => {
       }
   };
 
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token-gs");
+  useEffect(() => {
+    const token = localStorage.getItem("token-gs");
 
-  //   if (!token) {
-  //     navigate("/login");
-  //   }
-  // }, [navigate]);
+    if (!token) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
   useEffect(() => {
       fetchNotifications();

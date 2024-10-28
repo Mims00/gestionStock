@@ -6,51 +6,24 @@ import axios from 'axios';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
+  const [input,setInput] = useState([])
 
-  // Initial state for form fields
-  const [formValues, setFormValues] = useState({
-    username: '',
-    email: '',
-    password: '',
-    password2: ''
-  });
-
-  // Handle change in form fields
-  const handleChange = (e) => {
+  const change = (e) => {
     const { name, value } = e.target;
-    setFormValues({
-      ...formValues,
-      [name]: value
-    });
-  };
+    setInput(values => ({ ...values, [name]: value }));
+  }
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
+  const submit = async (e) => {
     e.preventDefault();
-
-    // Check if passwords match
-    if (formValues.password !== formValues.password2) {
-      alert('Les mots de passe ne correspondent pas.');
-      return;
-    }
-
     try {
-      // Send data to backend
-      const response = await axios.post('http://localhost:3000/api/users', {
-        username: formValues.username,
-        email: formValues.email,
-        password: formValues.password
-      });
-
-      if (response.status === 201) {
-        alert('Inscription réussie !');
-        navigate('/login');
-      }
-    } catch (error) {
-      console.error('Erreur lors de l\'inscription :', error);
-      alert('Erreur lors de l\'inscription. Veuillez réessayer.');
+      console.log(input); // Vérifiez que les données sont correctes
+      await axios.post("http://localhost:3000/api/users/", { data: input });
+      navigate("/login");
+    } catch (err) {
+      console.error("Erreur lors de l'inscription", err);
     }
   };
+  
 
   return (
     <Container
@@ -75,14 +48,13 @@ const RegisterPage = () => {
           Inscription
         </Typography>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={submit}>
           <TextField
             fullWidth
             label="Nom d'utilisateur"
             margin="normal"
             name="username"
-            value={formValues.username}
-            onChange={handleChange}
+            onChange={change}
             variant="outlined"
             InputProps={{
               startAdornment: (
@@ -98,8 +70,7 @@ const RegisterPage = () => {
             label="Email ou numéro de téléphone"
             margin="normal"
             name="email"
-            value={formValues.email}
-            onChange={handleChange}
+            onChange={change}
             variant="outlined"
             InputProps={{
               startAdornment: (
@@ -116,8 +87,7 @@ const RegisterPage = () => {
             type="password"
             margin="normal"
             name="password"
-            value={formValues.password}
-            onChange={handleChange}
+            onChange={change}
             variant="outlined"
             InputProps={{
               startAdornment: (
@@ -134,8 +104,6 @@ const RegisterPage = () => {
             type="password"
             name="password2"
             margin="normal"
-            value={formValues.password2}
-            onChange={handleChange}
             variant="outlined"
             InputProps={{
               startAdornment: (
