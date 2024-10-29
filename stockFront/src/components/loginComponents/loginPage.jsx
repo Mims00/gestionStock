@@ -5,32 +5,35 @@ import { Link, useNavigate  } from 'react-router-dom';
 import axios from 'axios';
 
 const LoginPage = () => {
-  const [identifier, setIdentifier] = useState(''); // Utilisé pour l'email ou le téléphone
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const [input,setInput] = useState([])
 
-  const navigate = useNavigate(); // Initialiser navigate
-
-  const handleLogin = async () => {
-    try {
-      // Envoi de l'identifiant (email ou téléphone) et du mot de passe
-      const response = await axios.post('http://localhost:3000/api/auth', { identifier, password });
-      // Stocker le token JWT dans le localStorage
-      localStorage.setItem('token', response.data.token);
-      console.log('Connexion réussie:', response.data);
-
-      // Rediriger vers la page d'accueil
-      navigate('/'); // Redirection vers la page d'accueil ou toute autre route
-    }  catch (error) {
-      if (error.response && error.response.status === 401) {
-          setError('Mot de passe incorrect');
-      } else if (error.response && error.response.status === 404) {
-          setError('Utilisateur non trouvé');
-      } else {
-          setError('Une erreur est survenue. Veuillez réessayer.');
-      }
+  const change = (e) => {
+    const { name, value } = e.target;
+    setInput(values => ({ ...values, [name]: value }));
   }
+
+  const submit = async (e) => {
+    e.preventDefault();
+    try {
+      console.log(input); // Vérifiez que les données sont correctes
+      const response = await axios.post("http://localhost:3000/api/auth", input);
+      console.log(response.data);
+
+      if(response.data.login)
+      {
+        localStorage.setItem("token-gs",response.data.token)
+        navigate("/")
+      }else
+      {
+        navigate("/login")
+      }
+      
+    } catch (err) {
+      console.error("Erreur lors de l'inscription", err);
+    }
   };
+ 
 
   return (
     <Container
@@ -42,7 +45,7 @@ const LoginPage = () => {
         alignItems: 'center',
         padding: 0,
         margin: 0,
-        marginLeft: '5%',  // Added margin to move the container slightly to the right
+        marginLeft: '5%',
       }}
     >
       <Box
@@ -70,14 +73,15 @@ const LoginPage = () => {
             Connexion
           </Typography>
 
-          <form>
+          <form onSubmit={submit}>
             <TextField
               fullWidth
-              label="Email ou Numéro de téléphone"
+              label="Email"
               margin="normal"
+              name='email'
               variant="outlined"
-              value={identifier} // Met à jour l'identifier avec email ou phone
-              onChange={(e) => setIdentifier(e.target.value)} // Gestion du changement
+
+              onChange={change} // Gestion du changement
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -91,9 +95,9 @@ const LoginPage = () => {
               label="Mot de passe"
               type="password"
               margin="normal"
+              name='password'
               variant="outlined"
-              value={password} // Met à jour le mot de passe
-              onChange={(e) => setPassword(e.target.value)} // Gestion du changement
+              onChange={change}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -107,13 +111,13 @@ const LoginPage = () => {
               fullWidth
               variant="contained"
               color="primary"
+              type='submit'
               sx={{
                 marginTop: 3,
                 backgroundColor: '#003366', // Navy blue background for the button
                 color: '#fff', // White text
                 '&:hover': { backgroundColor: '#002244' }, // Darker navy on hover
               }}
-              onClick={handleLogin}
             >
               Se connecter
             </Button>

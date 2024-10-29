@@ -1,5 +1,11 @@
 const bcrypt = require('bcrypt');
-const User = require('../models'); // Assurez-vous que le modèle est bien importé
+const { Sequelize } = require('sequelize');
+const sequelize = new Sequelize('gestionstock', 'root', '', {
+  host: 'localhost',
+  dialect: 'mysql',
+});
+const User = require('../models/user')(sequelize);
+sequelize.sync();
 
 const addUser = async (req, res) => {
   try {
@@ -8,11 +14,13 @@ const addUser = async (req, res) => {
 
     // Vérification que les données obligatoires sont présentes
     if (!data || !data.username || !data.email || !data.password) {
-      return res.status(400).json({ error: 'All fields are required.' });
+      return res.status(400).json({ error: 'Les champs sont requis.' });
     }
 
-    // Création de l'utilisateur en utilisant l'objet data
-    const user = await User.create(data);
+    // Hachage du mot de passe
+    const hashedPassword = await bcrypt.hash(data.password, 12)
+    // Création de l'utilisateur avec le mot de passe haché
+    const user = await User.create({ ...data, password: hashedPassword });
 
     // Réponse avec l'utilisateur créé
     res.status(201).json(user);
@@ -21,6 +29,7 @@ const addUser = async (req, res) => {
     res.status(500).json({ error: 'Error creating user.' });
   }
 };
+
 
 
 // Ajouter nom d'utilisateur et mot de passe
