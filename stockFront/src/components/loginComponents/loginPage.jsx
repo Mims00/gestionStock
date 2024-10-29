@@ -29,7 +29,6 @@ const LoginPage = () => {
         navigate("/login")
       }
       
-      // navigate("/login");
     } catch (err) {
       console.error("Erreur lors de l'inscription", err);
     }
@@ -46,7 +45,7 @@ const LoginPage = () => {
         alignItems: 'center',
         padding: 0,
         margin: 0,
-        marginLeft: '5%',  // Added margin to move the container slightly to the right
+        marginLeft: '5%',
       }}
     >
       <Box

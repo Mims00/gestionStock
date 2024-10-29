@@ -18,7 +18,7 @@ const addUser = async (req, res) => {
     }
 
     // Hachage du mot de passe
-    const hashedPassword = await bcrypt.hash(password, 12)
+    const hashedPassword = await bcrypt.hash(data.password, 12)
     // Création de l'utilisateur avec le mot de passe haché
     const user = await User.create({ ...data, password: hashedPassword });
 
